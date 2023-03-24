@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model favoriteMessage {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  messageId Int
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @db.Timestamptz(6)
+  message   message  @relation(fields: [messageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model friend {
+  id                         Int      @id @default(autoincrement())
+  userId                     Int
+  friendId                   Int
+  createdAt                  DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt                  DateTime @db.Timestamptz(6)
+  user_friend_friendIdTouser user     @relation("friend_friendIdTouser", fields: [friendId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_friend_userIdTouser   user     @relation("friend_userIdTouser", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model group {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(40)
+  description String?       @db.VarChar(300)
+  recipientId Int
+  createdAt   DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime      @db.Timestamptz(6)
+  recipient   recipient     @relation(fields: [recipientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  groupConfig groupConfig[]
+  groupMember groupMember[]
+}
+
+model groupConfig {
+  id          Int      @id @default(autoincrement())
+  groupId     Int
+  userMessage Boolean  @default(true)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @db.Timestamptz(6)
+  group       group    @relation(fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model groupMember {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  groupId   Int
+  admin     Boolean
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @db.Timestamptz(6)
+  group     group    @relation(fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model login {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique @db.VarChar(50)
+  password  String
+  userId    Int
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @db.Timestamptz(6)
+  user      user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model message {
+  id              Int               @id @default(autoincrement())
+  text            String
+  from            Int
+  to              Int
+  deleteForMe     Boolean           @default(false)
+  deleteForAll    Boolean           @default(false)
+  createdAt       DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime          @db.Timestamptz(6)
+  favoriteMessage favoriteMessage[]
+  user            user              @relation(fields: [from], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  recipient       recipient         @relation(fields: [to], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model pinnedConversation {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  recipientId Int
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @db.Timestamptz(6)
+  recipient   recipient @relation(fields: [recipientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user        user      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model recipient {
+  id                 Int                  @id @default(autoincrement())
+  createdAt          DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime             @db.Timestamptz(6)
+  group              group[]
+  message            message[]
+  pinnedConversation pinnedConversation[]
+  user               user[]
+}
+
+model session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @db.Timestamptz(6)
+  user      user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user {
+  id                           Int                  @id @default(autoincrement())
+  username                     String               @unique @db.VarChar(40)
+  pictureUrl                   String?
+  lastSeen                     DateTime             @default(now()) @db.Timestamptz(6)
+  recipientId                  Int
+  createdAt                    DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt                    DateTime             @db.Timestamptz(6)
+  favoriteMessage              favoriteMessage[]
+  friend_friend_friendIdTouser friend[]             @relation("friend_friendIdTouser")
+  friend_friend_userIdTouser   friend[]             @relation("friend_userIdTouser")
+  groupMember                  groupMember[]
+  login                        login[]
+  message                      message[]
+  pinnedConversation           pinnedConversation[]
+  session                      session[]
+  recipient                    recipient            @relation(fields: [recipientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userConfig                   userConfig[]
+}
+
+model userConfig {
+  id        Int          @id @default(autoincrement())
+  userId    Int
+  status    Boolean      @default(true)
+  lastSeen  lastSeenType @default(ALL)
+  darkTheme Boolean
+  createdAt DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime     @db.Timestamptz(6)
+  user      user         @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum lastSeenType {
+  ALL
+  FRIENDS
+  NONE
+}
