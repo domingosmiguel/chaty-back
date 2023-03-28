@@ -6,10 +6,17 @@ import 'express-async-errors';
 loadEnv();
 
 import { handleApplicationErrors } from '@/middlewares';
+import { authenticationRouter } from './routers/authentication.router';
+import { usersRouter } from './routers/users.router';
 
 const app = express();
 
-app.use(cors()).use(express.json()).use(handleApplicationErrors);
+app
+  .use(cors())
+  .use(express.json())
+  .use('/auth', authenticationRouter)
+  .use('/users', usersRouter)
+  .use(handleApplicationErrors);
 
 export async function init(): Promise<Express> {
   connectPrismaDb();
