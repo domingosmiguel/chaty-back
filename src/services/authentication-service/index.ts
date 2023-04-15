@@ -41,7 +41,7 @@ async function createSession(userId: number) {
 }
 
 async function getUserOrFail(id: number): Promise<GetUserOrFailResult> {
-  return await userRepository.findById(id, { id: true, username: true, pictureUrl: true, recipientId: true });
+  return await userRepository.findById(id, { id: true, username: true, pictureUrl: true, entityId: true });
 }
 
 async function validatePasswordOrFail(password: string, userPassword: string) {
@@ -58,7 +58,7 @@ type SignInResult = {
 
 type GetLoginOrFailResult = Pick<login, 'password' | 'userId'>;
 
-type GetUserOrFailResult = Pick<user, 'id' | 'username' | 'pictureUrl' | 'recipientId'>;
+type GetUserOrFailResult = Pick<user, 'id' | 'username' | 'pictureUrl' | 'entityId'>;
 
 const authenticationService = {
   signIn,

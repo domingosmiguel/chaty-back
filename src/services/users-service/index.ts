@@ -3,7 +3,7 @@ import userRepository, { CreateUserParams } from '@/repositories/user-repository
 import bcrypt from 'bcrypt';
 import { duplicatedEmailError } from './errors';
 
-export async function createUser({ email, password, username }: CreateUserParams): Promise<void> {
+async function createUser({ email, password, username }: CreateUserParams): Promise<void> {
   await validateUniqueEmailOrFail(email);
 
   const hashedPassword = await bcrypt.hash(password, 12);
@@ -22,8 +22,19 @@ async function validateUniqueEmailOrFail(email: string) {
   }
 }
 
+async function findUsers(userId: number, username: string) {
+  console.log('service');
+
+  return userRepository.findByUsername(userId, username, {
+    username: true,
+    pictureUrl: true,
+    entityId: true,
+  });
+}
+
 const userService = {
   createUser,
+  findUsers,
 };
 
 export * from './errors';
