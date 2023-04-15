@@ -13,8 +13,8 @@ model favoriteMessage {
   messageId Int
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt
-  message   message  @relation(fields: [messageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user      user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  message   message  @relation(fields: [messageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model friend {
@@ -23,18 +23,18 @@ model friend {
   friendId                   Int
   createdAt                  DateTime @default(now()) @db.Timestamptz(6)
   updatedAt                  DateTime @updatedAt
-  user_friend_friendIdTouser user     @relation("friend_friendIdTouser", fields: [friendId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user_friend_userIdTouser   user     @relation("friend_userIdTouser", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_friend_friendIdTouser user     @relation("friend_friendIdTouser", fields: [friendId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_friend_userIdTouser   user     @relation("friend_userIdTouser", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model group {
   id          Int           @id @default(autoincrement())
   name        String        @db.VarChar(40)
   description String?       @db.VarChar(300)
-  recipientId Int
+  entityId    Int
   createdAt   DateTime      @default(now()) @db.Timestamptz(6)
   updatedAt   DateTime      @updatedAt
-  recipient   recipient     @relation(fields: [recipientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  entity      entity        @relation(fields: [entityId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   groupConfig groupConfig[]
   groupMember groupMember[]
 }
@@ -45,7 +45,7 @@ model groupConfig {
   userMessage Boolean  @default(true)
   createdAt   DateTime @default(now()) @db.Timestamptz(6)
   updatedAt   DateTime @updatedAt
-  group       group    @relation(fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  group       group    @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model groupMember {
@@ -55,8 +55,8 @@ model groupMember {
   admin     Boolean
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt
-  group     group    @relation(fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user      user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  group     group    @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model login {
@@ -66,39 +66,39 @@ model login {
   userId    Int      @unique
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt
-  user      user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      user     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 }
 
 model message {
-  id              Int               @id @default(autoincrement())
-  text            String
-  from            Int
-  to              Int
-  deleteForMe     Boolean           @default(false)
-  deleteForAll    Boolean           @default(false)
-  createdAt       DateTime          @default(now()) @db.Timestamptz(6)
-  updatedAt       DateTime          @updatedAt
-  favoriteMessage favoriteMessage[]
-  user            user              @relation(fields: [from], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  recipient       recipient         @relation(fields: [to], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                 Int               @id @default(autoincrement())
+  text               String
+  from               Int
+  to                 Int
+  deletedForAll      Boolean           @default(false)
+  createdAt          DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime          @updatedAt
+  favoriteMessage    favoriteMessage[]
+  entity_MessageFrom entity?           @relation("entityFrom", fields: [from], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  entity_MessageTo   entity?           @relation("entityTo", fields: [to], references: [id], onDelete: SetNull, onUpdate: Cascade)
 }
 
 model pinnedConversation {
-  id          Int       @id @default(autoincrement())
-  userId      Int
-  recipientId Int
-  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime  @updatedAt
-  recipient   recipient @relation(fields: [recipientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user        user      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  entityId  Int?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt
+  entity    entity?  @relation(fields: [entityId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
-model recipient {
+model entity {
   id                 Int                  @id @default(autoincrement())
   createdAt          DateTime             @default(now()) @db.Timestamptz(6)
   updatedAt          DateTime             @updatedAt
   group              group[]
-  message            message[]
+  entity_MessageFrom message[]            @relation("entityFrom")
+  entity_MessageTo   message[]            @relation("entityTo")
   pinnedConversation pinnedConversation[]
   user               user[]
 }
@@ -109,7 +109,7 @@ model session {
   token     String
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt
-  user      user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model user {
@@ -117,7 +117,7 @@ model user {
   username                     String               @unique @db.VarChar(40)
   pictureUrl                   String?
   lastSeen                     DateTime             @default(now()) @db.Timestamptz(6)
-  recipientId                  Int                  @unique
+  entityId                     Int                  @unique
   createdAt                    DateTime             @default(now()) @db.Timestamptz(6)
   updatedAt                    DateTime             @updatedAt
   favoriteMessage              favoriteMessage[]
@@ -125,10 +125,9 @@ model user {
   friend_friend_userIdTouser   friend[]             @relation("friend_userIdTouser")
   groupMember                  groupMember[]
   login                        login[]
-  message                      message[]
   pinnedConversation           pinnedConversation[]
   session                      session[]
-  recipient                    recipient            @relation(fields: [recipientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  entity                       entity               @relation(fields: [entityId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   userConfig                   userConfig[]
 }
 
@@ -140,7 +139,7 @@ model userConfig {
   darkTheme Boolean
   createdAt DateTime     @default(now()) @db.Timestamptz(6)
   updatedAt DateTime     @updatedAt
-  user      user         @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      user         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 enum lastSeenType {

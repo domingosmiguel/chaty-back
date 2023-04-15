@@ -7,6 +7,7 @@ loadEnv();
 
 import { handleApplicationErrors } from '@/middlewares';
 import { authenticationRouter } from './routers/authentication.router';
+import { messagesRouter } from './routers/messages.router';
 import { usersRouter } from './routers/users.router';
 
 const app = express();
@@ -16,6 +17,7 @@ app
   .use(express.json())
   .use('/auth', authenticationRouter)
   .use('/users', usersRouter)
+  .use('/messages', messagesRouter)
   .use(handleApplicationErrors);
 
 export async function init(): Promise<Express> {
