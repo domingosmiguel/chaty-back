@@ -13,7 +13,7 @@ export async function usersPost(req: Request, res: Response) {
 export async function searchUsers(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
   const { username } = req.params;
-  console.log('controller');
+
   const users = await usersService.findUsers(userId, username);
   return res.status(httpStatus.OK).send(users);
 }

@@ -23,8 +23,6 @@ async function validateUniqueEmailOrFail(email: string) {
 }
 
 async function findUsers(userId: number, username: string) {
-  console.log('service');
-
   return userRepository.findByUsername(userId, username, {
     username: true,
     pictureUrl: true,
