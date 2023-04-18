@@ -1,10 +1,8 @@
-import { connectPrismaDb, connectRedis, disconnectPrismaDB, disconnectRedis, loadEnv } from '@/config';
 import cors from 'cors';
-
 import express, { Express } from 'express';
 import 'express-async-errors';
-loadEnv();
 
+import { connectPrismaDb, connectRedis, disconnectPrismaDB, disconnectRedis } from '@/config';
 import { handleApplicationErrors } from '@/middlewares';
 import { authenticationRouter } from './routers/authentication.router';
 import { messagesRouter } from './routers/messages.router';

@@ -22,9 +22,8 @@ async function findChatMessages(data: FindAllMessagesArgs, select?: Prisma.messa
   return prisma.message.findMany(params);
 }
 
-async function findByEntityId(entityId: number) {
-  return prisma.message.groupBy({
-    by: ['from', 'to', 'createdAt'],
+async function findByEntityId(entityId: number, select?: Prisma.messageSelect) {
+  const params: Prisma.messageFindManyArgs = {
     where: {
       OR: [
         {
@@ -40,11 +39,16 @@ async function findByEntityId(entityId: number) {
         },
       ],
     },
-    take: 1,
     orderBy: {
       createdAt: 'desc',
     },
-  });
+  };
+
+  if (select) {
+    params.select = select;
+  }
+
+  return prisma.message.findMany(params);
 }
 
 const messageRepository = {

@@ -5,21 +5,24 @@
   "main": "dist/index.js",
   "author": "Miguel Domingos",
   "scripts": {
-    "build": "tsc",
+    "prebuild": "rimraf dist",
+    "build": "npm run prebuild && tsc -p tsconfig.build.json --skipLibCheck",
     "start": "node dist/server.js",
-    "migration:run": "prisma migrate deploy",
+    "start_test": "npm run migrate:deploy && tsx ./src/server.ts",
+    "migrate:deploy": "prisma migrate deploy",
     "test": "NODE_ENV=test jest --passWithNoTests --runInBand",
     "test:coverage": "NODE_ENV=test jest --passWithNoTests --runInBand --coverage --collectCoverageFrom='./src/**'",
-    "test:migration:run": "npm run test:load-envs prisma migrate deploy",
-    "test:migration:generate": "npm run test:load-envs prisma migrate dev",
+    "test:migrate:dev": "npm run test:load-envs prisma migrate dev",
+    "test:migrate:deploy": "npm run test:load-envs prisma migrate deploy",
     "test:watch": "jest --watch --passWithNoTests --runInBand",
     "test:load-envs": "dotenv -e .env.test",
     "test:seed": "npm run test:load-envs prisma db seed",
     "dev:load-envs": "dotenv -e .env.development",
-    "dev:migration:run": "npm run dev:load-envs prisma migrate deploy",
-    "dev:migration:generate": "npm run dev:load-envs prisma migrate dev",
+    "dev:migrate:dev": "npm run dev:load-envs prisma migrate dev",
+    "dev:migrate:deploy": "npm run dev:load-envs prisma migrate deploy",
     "dev:seed": "npm run dev:load-envs prisma db seed",
-    "dev": "NODE_ENV=development nodemon -L --watch 'src/' --exec 'ts-node -r tsconfig-paths/register ./src/server.ts' -e ts"
+    "dev": "NODE_ENV=development nodemon -L --watch 'src/' --exec 'ts-node -r tsconfig-paths/register ./src/server.ts' -e ts",
+    "dev_test": "NODE_ENV=development tsx watch ./src/server.ts"
   },
   "devDependencies": {
     "@faker-js/faker": "^6.3.1",
@@ -40,7 +43,10 @@
     "lint-staged": "^12.4.1",
     "nodemon": "^2.0.16",
     "prettier": "^2.6.2",
-    "ts-node": "^10.7.0"
+    "rimraf": "^5.0.0",
+    "ts-node": "^10.7.0",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^3.12.6"
   },
   "dependencies": {
     "@prisma/client": "^4.11.0",
@@ -55,7 +61,6 @@
     "jsonwebtoken": "^9.0.0",
     "prisma": "^4.11.0",
     "redis": "^4.6.5",
-    "tsconfig-paths": "^4.1.2",
     "typescript": "^5.0.2"
   }
 }

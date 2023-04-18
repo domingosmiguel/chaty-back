@@ -17,13 +17,27 @@ async function findById(id: number, select?: Prisma.userSelect) {
   return prisma.user.findUnique(params);
 }
 
+async function findByEntityId(entityId: number, select?: Prisma.userSelect) {
+  const params: Prisma.userFindUniqueArgs = {
+    where: {
+      entityId,
+    },
+  };
+
+  if (select) {
+    params.select = select;
+  }
+
+  return prisma.user.findUnique(params);
+}
+
 async function findByUsername(userId: number, username: string, select?: Prisma.userSelect) {
   const params: Prisma.userFindManyArgs = {
     where: {
       username: { contains: username },
-      // NOT: {
-      //   id: userId,
-      // },
+      NOT: {
+        id: userId,
+      },
     },
     take: 10,
   };
@@ -61,6 +75,7 @@ async function newUser(data: Prisma.userUncheckedCreateInput) {
 const userRepository = {
   findById,
   create,
+  findByEntityId,
   findByUsername,
 };
 

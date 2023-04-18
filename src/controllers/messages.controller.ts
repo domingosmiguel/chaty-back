@@ -1,3 +1,4 @@
+import { invalidDataError } from '@/errors';
 import { AuthenticatedRequest } from '@/middlewares';
 import messageService from '@/services/messages-service';
 import { Response } from 'express';
@@ -25,7 +26,11 @@ export async function userMessagesGet(req: AuthenticatedRequest, res: Response) 
   const { userId } = req;
   const { recipientId } = req.params;
 
+  if (recipientId === 'undefined' || recipientId === '0') {
+    throw invalidDataError(['Missing Entity ID']);
+  }
+
   const chatData = await messageService.getAllMessagesAndUserData({ userId, recipientId: parseInt(recipientId, 10) });
 
-  return res.sendStatus(httpStatus.OK).send(chatData);
+  return res.status(httpStatus.OK).send(chatData);
 }
