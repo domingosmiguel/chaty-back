@@ -13,20 +13,21 @@ jobs:
       - name: Create node env file
         uses: SpicyPizza/create-envfile@v1.3.1
         with:
-          envkey_PORT: ${{secrets.PORT}}
-          envkey_POSTGRES_USERNAME: ${{secrets.POSTGRES_USERNAME}}
-          envkey_POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
-          envkey_POSTGRES_HOST: ${{secrets.POSTGRES_PASSWORD}}
-          envkey_POSTGRES_PORT: ${{secrets.PORT}}
-          envkey_POSTGRES_DATABASE: ${{secrets.POSTGRES_DATABASE}}
-          envkey_DATABASE_URL: postgresql://${{secrets.POSTGRES_USERNAME}}:${{secrets.POSTGRES_PASSWORD}}@${{secrets.POSTGRES_HOST}}:${{secrets.POSTGRES_PORT}}/${{secrets.POSTGRES_DATABASE}}?schema=public
-          envkey_REDIS_HOST: ${{secrets.REDIS_HOST}}
-          envkey_REDIS_PORT: ${{secrets.REDIS_PORT}}
-          envkey_REDIS_EXPIRATION: ${{secrets.REDIS_EXPIRATION}}
-          envkey_REDIS_URL: redis://${{secrets.REDIS_HOST}}:${{secrets.REDIS_PORT}}
           directory: /
           file_name: .env.development
           fail_on_empty: true
+        envs:
+          PORT: ${{secrets.PORT}}
+          POSTGRES_USERNAME: ${{secrets.POSTGRES_USERNAME}}
+          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+          POSTGRES_HOST: ${{secrets.POSTGRES_PASSWORD}}
+          POSTGRES_PORT: ${{secrets.PORT}}
+          POSTGRES_DATABASE: ${{secrets.POSTGRES_DATABASE}}
+          DATABASE_URL: postgresql://${{secrets.POSTGRES_USERNAME}}:${{secrets.POSTGRES_PASSWORD}}@${{secrets.POSTGRES_HOST}}:${{secrets.POSTGRES_PORT}}/${{secrets.POSTGRES_DATABASE}}?schema=public
+          REDIS_HOST: ${{secrets.REDIS_HOST}}
+          REDIS_PORT: ${{secrets.REDIS_PORT}}
+          REDIS_EXPIRATION: ${{secrets.REDIS_EXPIRATION}}
+          REDIS_URL: redis://${{secrets.REDIS_HOST}}:${{secrets.REDIS_PORT}}
       - name: Build
         run: docker compose build
       - name: Run
