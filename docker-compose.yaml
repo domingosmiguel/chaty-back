@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+  node:
+    container_name: node
+    restart: always
+    ports:
+      - '4000:4000'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./logs:/node/logs
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fullstack
+  postgres:
+    container_name: postgres
+    restart: always
+    ports:
+      - '5433:5432'
+    image: postgres
+    env_file:
+      - ./.env.development
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - fullstack
+  redis:
+    container_name: redis
+    restart: always
+    ports:
+      - '6380:6379'
+    image: redis
+    env_file:
+      - ./.env.development
+    volumes:
+      - ./redis-data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - fullstack
+
+networks:
+  fullstack:
+    external:
+      name: fullstack
