@@ -4,8 +4,6 @@ services:
     container_name: node
     restart: always
     image: chaty-api:latest
-    ports:
-      - '4000:4000'
     build:
       context: .
       dockerfile: Dockerfile
