@@ -15,14 +15,15 @@ services:
     networks:
       - chaty_nginx_proxy
     environment:
+      PORT: ${PORT}
       DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      REDIS_EXPIRATION: ${REDIS_EXPIRATION}
       REDIS_URL: ${REDIS_URL}
   postgres:
     container_name: postgres
     restart: always
     image: postgres
-    env_file:
-      - .env.development
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     networks:
@@ -33,8 +34,6 @@ services:
     container_name: redis
     restart: always
     image: redis
-    env_file:
-      - .env.development
     volumes:
       - ./redis-data:/data
       - ./redis.conf:/usr/local/etc/redis/redis.conf
