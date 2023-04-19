@@ -15,6 +15,7 @@ jobs:
       POSTGRES_PORT: ${{secrets.PORT}}
       POSTGRES_DATABASE: ${{secrets.POSTGRES_DATABASE}}
       DATABASE_URL: postgresql://${{secrets.POSTGRES_USERNAME}}:${{secrets.POSTGRES_PASSWORD}}@${{secrets.POSTGRES_HOST}}:${{secrets.POSTGRES_PORT}}/${{secrets.POSTGRES_DATABASE}}?schema=public
+      JWT_SECRET: ${{secrets.JWT_SECRET}}
       REDIS_HOST: ${{secrets.REDIS_HOST}}
       REDIS_PORT: ${{secrets.REDIS_PORT}}
       REDIS_EXPIRATION: ${{secrets.REDIS_EXPIRATION}}
@@ -35,6 +36,7 @@ jobs:
           POSTGRES_HOST: ${{env.POSTGRES_HOST}}
           POSTGRES_PORT: ${{env.PORT}}
           POSTGRES_DATABASE: ${{env.POSTGRES_DATABASE}}
+          JWT_SECRET: ${{env.JWT_SECRET}}
           DATABASE_URL: ${{env.DATABASE_URL}}
           REDIS_HOST: ${{env.REDIS_HOST}}
           REDIS_PORT: ${{env.REDIS_PORT}}
