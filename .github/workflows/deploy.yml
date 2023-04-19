@@ -8,12 +8,20 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 10
     env: 
+      PORT: ${{secrets.PORT}}
+      POSTGRES_USERNAME: ${{secrets.POSTGRES_USERNAME}}
       POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+      POSTGRES_HOST: ${{secrets.POSTGRES_HOST}}
+      POSTGRES_PORT: ${{secrets.PORT}}
+      POSTGRES_DATABASE: ${{secrets.POSTGRES_DATABASE}}
+      DATABASE_URL: postgresql://${{secrets.POSTGRES_USERNAME}}:${{secrets.POSTGRES_PASSWORD}}@${{secrets.POSTGRES_HOST}}:${{secrets.POSTGRES_PORT}}/${{secrets.POSTGRES_DATABASE}}?schema=public
+      REDIS_HOST: ${{secrets.REDIS_HOST}}
+      REDIS_PORT: ${{secrets.REDIS_PORT}}
+      REDIS_EXPIRATION: ${{secrets.REDIS_EXPIRATION}}
+      REDIS_URL: redis://${{secrets.REDIS_HOST}}:${{secrets.REDIS_PORT}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Print POSTGRES_PASSWORD
-        run: echo ${{secrets.POSTGRES_PASSWORD}}
       - name: Create node env file
         uses: SpicyPizza/create-envfile@v1.3.1
         with:
@@ -21,17 +29,17 @@ jobs:
           file_name: .env.development
           fail_on_empty: true
         env:
-          PORT: ${{secrets.PORT}}
-          POSTGRES_USERNAME: ${{secrets.POSTGRES_USERNAME}}
-          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
-          POSTGRES_HOST: ${{secrets.POSTGRES_HOST}}
-          POSTGRES_PORT: ${{secrets.PORT}}
-          POSTGRES_DATABASE: ${{secrets.POSTGRES_DATABASE}}
-          DATABASE_URL: postgresql://${{secrets.POSTGRES_USERNAME}}:${{secrets.POSTGRES_PASSWORD}}@${{secrets.POSTGRES_HOST}}:${{secrets.POSTGRES_PORT}}/${{secrets.POSTGRES_DATABASE}}?schema=public
-          REDIS_HOST: ${{secrets.REDIS_HOST}}
-          REDIS_PORT: ${{secrets.REDIS_PORT}}
-          REDIS_EXPIRATION: ${{secrets.REDIS_EXPIRATION}}
-          REDIS_URL: redis://${{secrets.REDIS_HOST}}:${{secrets.REDIS_PORT}}
+          PORT: ${{env.PORT}}
+          POSTGRES_USERNAME: ${{env.POSTGRES_USERNAME}}
+          POSTGRES_PASSWORD: ${{env.POSTGRES_PASSWORD}}
+          POSTGRES_HOST: ${{env.POSTGRES_HOST}}
+          POSTGRES_PORT: ${{env.PORT}}
+          POSTGRES_DATABASE: ${{env.POSTGRES_DATABASE}}
+          DATABASE_URL: ${{env.DATABASE_URL}}
+          REDIS_HOST: ${{env.REDIS_HOST}}
+          REDIS_PORT: ${{env.REDIS_PORT}}
+          REDIS_EXPIRATION: ${{env.REDIS_EXPIRATION}}
+          REDIS_URL: ${{env.REDIS_URL}}
       - name: Build
         run: docker-compose build
       - name: Run
