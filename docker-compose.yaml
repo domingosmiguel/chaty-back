@@ -3,8 +3,7 @@ services:
   node:
     container_name: node
     restart: always
-    ports:
-      - '4000:4000'
+    image: chaty-api:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -14,7 +13,7 @@ services:
       - postgres
       - redis
     networks:
-      - fullstack
+      - chaty_nginx_proxy
   postgres:
     container_name: postgres
     restart: always
@@ -24,7 +23,7 @@ services:
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     networks:
-      - fullstack
+      - chaty_nginx_proxy
   redis:
     container_name: redis
     restart: always
@@ -35,9 +34,9 @@ services:
       - ./redis-data:/data
       - ./redis.conf:/usr/local/etc/redis/redis.conf
     networks:
-      - fullstack
+      - chaty_nginx_proxy
 
 networks:
-  fullstack:
+  chaty_nginx_proxy:
     external:
-      name: fullstack
+      name: chaty_nginx_proxy
