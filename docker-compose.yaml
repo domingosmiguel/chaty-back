@@ -15,7 +15,7 @@ services:
     networks:
       - chaty_nginx_proxy
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_URL: ${DATABASE_URL}
   postgres:
     container_name: postgres
     restart: always
@@ -27,7 +27,7 @@ services:
     networks:
       - chaty_nginx_proxy
     environment:
-      DATABASE_URL: ${DATABASE_URL}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   redis:
     container_name: redis
     restart: always
