@@ -25,7 +25,7 @@ services:
     networks:
       - chaty_nginx_proxy
     environment:
-      - POSTGRES_PASSWORD=${(secrets.POSTGRES_PASSWORD}}
+      - POSTGRES_PASSWORD=${secrets.POSTGRES_PASSWORD}
   redis:
     container_name: redis
     restart: always
