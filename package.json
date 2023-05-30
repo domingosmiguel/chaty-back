@@ -21,7 +21,7 @@
     "dev:migrate:dev": "npm run dev:load-envs prisma migrate dev",
     "dev:migrate:deploy": "npm run dev:load-envs prisma migrate deploy",
     "dev:seed": "npm run dev:load-envs prisma db seed",
-    "dev": "NODE_ENV=development nodemon -L --watch 'src/' --exec 'ts-node -r tsconfig-paths/register ./src/server.ts' -e ts",
+    "dev": "NODE_ENV=development nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register ./src/server.ts' -e ts",
     "dev_test": "NODE_ENV=development tsx watch ./src/server.ts"
   },
   "devDependencies": {
@@ -44,9 +44,10 @@
     "nodemon": "^2.0.16",
     "prettier": "^2.6.2",
     "rimraf": "^5.0.0",
-    "ts-node": "^10.7.0",
+    "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "tsx": "^3.12.6"
+    "tsx": "^3.12.6",
+    "typescript-transform-paths": "^3.4.6"
   },
   "dependencies": {
     "@prisma/client": "^4.11.0",
