@@ -2,11 +2,11 @@ import cors from 'cors';
 import express, { Express } from 'express';
 import 'express-async-errors';
 
-import { connectPrismaDb, connectRedis, disconnectPrismaDB, disconnectRedis } from '@/config';
+import { connectPrismaDb, disconnectPrismaDB } from '@/config';
 import { handleApplicationErrors } from '@/middlewares';
-import { authenticationRouter } from './routers/authentication.router';
-import { messagesRouter } from './routers/messages.router';
-import { usersRouter } from './routers/users.router';
+import { authenticationRouter } from '@/routers/authentication.router';
+import { messagesRouter } from '@/routers/messages.router';
+import { usersRouter } from '@/routers/users.router';
 
 const app = express();
 
@@ -20,13 +20,13 @@ app
 
 export async function init(): Promise<Express> {
   connectPrismaDb();
-  await connectRedis();
+  // await connectRedis();
   return Promise.resolve(app);
 }
 
 export async function close(): Promise<void> {
   await disconnectPrismaDB();
-  await disconnectRedis();
+  // await disconnectRedis();
 }
 
 export default app;

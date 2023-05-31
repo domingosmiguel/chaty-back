@@ -6,7 +6,7 @@ export async function connectRedis(): Promise<void> {
     url: process.env.REDIS_URL,
   });
   await redis.connect();
-  console.log('Connected to Redis.');
+  console.log('Connected to Redis.'); // eslint-disable-line no-console
 }
 
 export async function disconnectRedis(): Promise<void> {

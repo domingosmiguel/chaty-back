@@ -9,7 +9,7 @@ export function connectPrismaDb(): void {
       },
     },
   });
-  console.log('Connected to Postgres.');
+  console.log('Connected to Postgres.'); // eslint-disable-line no-console
 }
 
 export async function disconnectPrismaDB(): Promise<void> {
