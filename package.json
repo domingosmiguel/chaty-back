@@ -2,11 +2,11 @@
   "name": "chaty-back",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/server.js",
   "author": "Miguel Domingos",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "npm run prebuild && tsc -p tsconfig.build.json --skipLibCheck",
+    "build": "npm run prebuild && tsc -p tsconfig.build.json --skipLibCheck && tsc-alias",
     "start": "node dist/server.js",
     "start_test": "NODE_ENV=development npm run dev:migrate:deploy && npm run dev_test",
     "migrate:deploy": "prisma migrate deploy",
@@ -45,8 +45,10 @@
     "prettier": "^2.6.2",
     "rimraf": "^5.0.0",
     "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.6",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^3.12.6",
+    "typescript": "^5.0.4",
     "typescript-transform-paths": "^3.4.6"
   },
   "dependencies": {
@@ -61,7 +63,6 @@
     "joi": "^17.9.1",
     "jsonwebtoken": "^9.0.0",
     "prisma": "^4.11.0",
-    "redis": "^4.6.5",
-    "typescript": "^5.0.2"
+    "redis": "^4.6.5"
   }
 }
